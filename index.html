@@ -6,52 +6,67 @@
   <title>Photography Portfolio</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* Minimal slideshow styles */
+    /* Slideshow container */
     #slideshow-container {
-      max-width: 600px;
-      margin: 2rem auto;
       position: relative;
+      max-width: 900px;
+      margin: 3rem auto;
       background: #222;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.7);
-      text-align: center;
-      color: #eee;
-      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+      overflow: hidden;
     }
+
+    /* The image */
     #slide-image {
       width: 100%;
-      max-height: 400px;
+      height: 600px;
       object-fit: contain;
-      border-radius: 10px;
+      display: block;
       background: #111;
     }
+
+    /* Caption below image */
     #caption {
-      margin-top: 0.8rem;
-      font-size: 1.2rem;
+      color: #eee;
+      padding: 1rem 0;
+      font-size: 1.3rem;
+      text-align: center;
+      background: #1a1a1a;
+      user-select: none;
     }
+
+    /* Next & previous buttons */
     .nav-button {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(240,165,0,0.8);
+      background: rgba(240,165,0,0.9);
       border: none;
       color: #121212;
       font-weight: 700;
-      font-size: 1.5rem;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
+      font-size: 2.5rem;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
       cursor: pointer;
       user-select: none;
+      transition: background 0.3s ease;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
     }
+
     #prev-btn {
       left: 10px;
     }
+
     #next-btn {
       right: 10px;
     }
+
     .nav-button:hover {
       background: #f0a500;
     }
+
     /* Contact Info styling (same as before) */
     .contact-info {
       background: #222;
@@ -82,6 +97,17 @@
     .contact-info a:hover {
       text-decoration: underline;
     }
+
+    /* Responsive tweaks */
+    @media (max-width: 600px) {
+      #slide-image {
+        height: 300px;
+      }
+      .nav-button {
+        font-size: 1.8rem;
+        padding: 0.3rem 0.8rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -94,9 +120,9 @@
   <main>
 
     <div id="slideshow-container">
-      <button id="prev-btn" class="nav-button" aria-label="Previous Photo">&lt;</button>
+      <button id="prev-btn" class="nav-button" aria-label="Previous Photo">&#10094;</button>
       <img id="slide-image" src="" alt="Portfolio photo" />
-      <button id="next-btn" class="nav-button" aria-label="Next Photo">&gt;</button>
+      <button id="next-btn" class="nav-button" aria-label="Next Photo">&#10095;</button>
       <div id="caption"></div>
     </div>
 
@@ -118,9 +144,9 @@
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
 
-    // Helper function to check if an image exists by trying to load it
+    // Check if an image exists by loading it
     function imageExists(url) {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const img = new Image();
         img.onload = () => resolve(true);
         img.onerror = () => resolve(false);
@@ -133,11 +159,12 @@
       let tries = 0;
 
       while (tries < maxImages) {
-        if (i > maxImages) i = 1; // loop back start
-        if (i < 1) i = maxImages; // loop back end
+        if (i > maxImages) i = 1;
+        if (i < 1) i = maxImages;
 
         const url = `images/${i}.jpg`;
         const exists = await imageExists(url);
+
         if (exists) {
           currentIndex = i;
           slideImage.src = url;
@@ -145,12 +172,12 @@
           caption.textContent = `Photo ${i}`;
           break;
         }
-        i += (index > currentIndex) ? 1 : -1; // search next or prev
+
+        i += (index > currentIndex) ? 1 : -1;
         tries++;
       }
 
       if (tries >= maxImages) {
-        // No images found at all
         slideImage.src = '';
         slideImage.alt = 'No photos available';
         caption.textContent = 'No photos available';
@@ -165,7 +192,7 @@
       showImage(currentIndex + 1);
     });
 
-    // Load first available image on page load
+    // Show first image on load
     showImage(currentIndex);
   </script>
 
