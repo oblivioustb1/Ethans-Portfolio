@@ -3,41 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Name | Photography</title>
+  <title>Photography Portfolio</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <header>
-    <h1>Your Name</h1>
-    <nav>
-      <a href="#gallery">Gallery</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
+    <h1>My Photography Portfolio</h1>
+    <p>Check out some of my shots below!</p>
   </header>
 
-  <section id="gallery">
-    <h2>Gallery</h2>
-    <div class="gallery">
-      <img src="images/IMG_0361.jpg" alt="Urban photo" />
-    </div>
-  </section>
+  <main>
+    <div id="gallery"></div>
+  </main>
 
-  <section id="about">
-    <h2>About Me</h2>
-    <p>I’m a photographer who captures urban, portrait, and real-life moments. Based in NYC.</p>
-  </section>
+  <script>
+    const gallery = document.getElementById("gallery");
 
-  <section id="contact">
-    <h2>Contact</h2>
-    <p>Email: your.email@example.com</p>
-    <p>Instagram: @yourhandle</p>
-  </section>
-
-  <footer>
-    <p>© 2025 Your Name</p>
-  </footer>
+    // Loop to load images named 1.jpg to 50.jpg
+    for (let i = 1; i <= 50; i++) {
+      const img = document.createElement("img");
+      img.src = `images/${i}.jpg`;
+      img.alt = `Photo ${i}`;
+      img.classList.add("gallery-img");
+      gallery.appendChild(img);
+    }
+  </script>
 
 </body>
 </html>
