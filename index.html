@@ -5,6 +5,84 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Photography Portfolio</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Minimal slideshow styles */
+    #slideshow-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      position: relative;
+      background: #222;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.7);
+      text-align: center;
+      color: #eee;
+      padding: 1rem;
+    }
+    #slide-image {
+      width: 100%;
+      max-height: 400px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: #111;
+    }
+    #caption {
+      margin-top: 0.8rem;
+      font-size: 1.2rem;
+    }
+    .nav-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(240,165,0,0.8);
+      border: none;
+      color: #121212;
+      font-weight: 700;
+      font-size: 1.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      user-select: none;
+    }
+    #prev-btn {
+      left: 10px;
+    }
+    #next-btn {
+      right: 10px;
+    }
+    .nav-button:hover {
+      background: #f0a500;
+    }
+    /* Contact Info styling (same as before) */
+    .contact-info {
+      background: #222;
+      color: #eee;
+      padding: 1.5rem;
+      margin: 2rem auto;
+      max-width: 400px;
+      border-radius: 10px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      text-align: left;
+      line-height: 1.6;
+    }
+    .contact-info h2 {
+      margin-top: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #f0a500;
+    }
+    .contact-info p {
+      margin: 0.4rem 0;
+      font-size: 1.1rem;
+    }
+    .contact-info a {
+      color: #f0a500;
+      text-decoration: none;
+    }
+    .contact-info a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
 
@@ -14,7 +92,13 @@
   </header>
 
   <main>
-    <div id="gallery"></div>
+
+    <div id="slideshow-container">
+      <button id="prev-btn" class="nav-button" aria-label="Previous Photo">&lt;</button>
+      <img id="slide-image" src="" alt="Portfolio photo" />
+      <button id="next-btn" class="nav-button" aria-label="Next Photo">&gt;</button>
+      <div id="caption"></div>
+    </div>
 
     <section class="contact-info">
       <h2>Ethan Hammock</h2>
@@ -22,19 +106,67 @@
       <p>Payments: <strong>$EthanH2708</strong></p>
       <p>Instagram: <a href="https://instagram.com/EH_photography0527" target="_blank">@EH_photography0527</a></p>
     </section>
+
   </main>
 
   <script>
-    const gallery = document.getElementById("gallery");
+    const maxImages = 50;
+    let currentIndex = 1;
 
-    // Loop to load images named 1.jpg to 50.jpg
-    for (let i = 1; i <= 50; i++) {
-      const img = document.createElement("img");
-      img.src = `images/${i}.jpg`;
-      img.alt = `Photo ${i}`;
-      img.classList.add("gallery-img");
-      gallery.appendChild(img);
+    const slideImage = document.getElementById('slide-image');
+    const caption = document.getElementById('caption');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    // Helper function to check if an image exists by trying to load it
+    function imageExists(url) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+      });
     }
+
+    async function showImage(index) {
+      let i = index;
+      let tries = 0;
+
+      while (tries < maxImages) {
+        if (i > maxImages) i = 1; // loop back start
+        if (i < 1) i = maxImages; // loop back end
+
+        const url = `images/${i}.jpg`;
+        const exists = await imageExists(url);
+        if (exists) {
+          currentIndex = i;
+          slideImage.src = url;
+          slideImage.alt = `Photo ${i}`;
+          caption.textContent = `Photo ${i}`;
+          break;
+        }
+        i += (index > currentIndex) ? 1 : -1; // search next or prev
+        tries++;
+      }
+
+      if (tries >= maxImages) {
+        // No images found at all
+        slideImage.src = '';
+        slideImage.alt = 'No photos available';
+        caption.textContent = 'No photos available';
+      }
+    }
+
+    prevBtn.addEventListener('click', () => {
+      showImage(currentIndex - 1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      showImage(currentIndex + 1);
+    });
+
+    // Load first available image on page load
+    showImage(currentIndex);
   </script>
 
 </body>
